@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打青蛙遊戲</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #1a5f1a, #0a3d0a);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #8B4513;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 #000;
+        }
+        
+        .subtitle {
+            color: #b0e0b0;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .game-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        #gameCanvas {
+            background-color: #2d5019;
+            border: 5px solid #8B4513;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .score-container {
+            background: rgba(139, 69, 19, 0.8);
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            border: 3px solid #5d2d0c;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
+        
+        .score {
+            font-weight: bold;
+            color: #FFD700;
+            margin: 0 10px;
+            font-size: 1.5rem;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            z-index: 10;
+        }
+        
+        .game-over h2 {
+            color: #FF4444;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 #000;
+        }
+        
+        .game-over p {
+            color: white;
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+        
+        button {
+            background: linear-gradient(to bottom, #8B4513, #5d2d0c);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.2s;
+            font-weight: bold;
+            border: 2px solid #3d1e08;
+            box-shadow: 0 5px 0 #3d1e08;
+        }
+        
+        button:hover { 
+            background: linear-gradient(to bottom, #9c5523, #6d3d1c);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #3d1e08;
+        }
+        
+        .instructions {
+            background: rgba(139, 69, 19, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-width: 600px;
+            text-align: center;
+            border: 3px solid #5d2d0c;
+        }
+        
+        .key-hint {
+            background: #5d2d0c;
+            color: #FFD700;
+            padding: 5px 15px;
+            border-radius: 5px;
+            margin: 0 5px;
+            font-weight: bold;
+            border: 1px solid #3d1e08;
+        }
+        
+        .health-bar {
+            width: 300px;
+            height: 25px;
+            background: #5d2d0c;
+            border-radius: 10px;
+            margin: 10px auto;
+            overflow: hidden;
+            border: 2px solid #3d1e08;
+        }
+        
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(to right, #00ff00, #ffff00, #ff4444);
+            width: 100%;
+            transition: width 0.3s;
+        }
+        
+        .warning {
+            color: #FF4444;
+            font-weight: bold;
+            animation: blink 0.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <h1>打青蛙遊戲</h1>
+    <p class="subtitle">按空白鍵把青蛙躲進洞中，躲避斧頭攻擊！</p>
+    
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+        
+        <div class="game-over" id="gameOverScreen">
+            <h2>遊戲結束！</h2>
+            <p>成功躲過了 <span id="finalScore" class="score">0</span> 次斧頭攻擊</p>
+            <p>最高紀錄: <span id="highScore" class="score">0</span> 次</p>
+            <button id="playAgainBtn">再玩一次</button>
+        </div>
+    </div>
+    
+    <div class="score-container">
+        躲過攻擊: <span class="score" id="score">0</span> 次 |
+        生命值: <span class="score" id="health">3</span> |
+        連擊: <span class="score" id="combo">0</span>
+    </div>
+    
+    <div class="health-bar">
+        <div class="health-fill" id="healthFill"></div>
+    </div>
+    
+    <div class="instructions">
+        <p>遊戲規則: 當青蛙從洞中探出頭時，按 <span class="key-hint">空白鍵</span> 讓牠躲回洞中</p>
+        <p>如果沒有及時躲藏，會被斧頭攻擊！每隻青蛙有3次生命</p>
+    </div>
+
+    <script>
+        // 取得Canvas元素
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 遊戲變數
+        let gameRunning = false;
+        let gameLoop;
+        let score = 0;
+        let highScore = localStorage.getItem('frogHighScore') || 0;
+        let health = 3;
+        let combo = 0;
+        let gameTime = 0;
+        
+        // 洞的數量和位置
+        const holes = [];
+        const holeCount = 6;
+        
+        // 青蛙物件
+        const frogs = [];
+        
+        // 斧頭物件
+        const axes = [];
+        
+        // 遊戲狀態
+        let spacePressed = false;
+        
+        // DOM元素
+        const scoreElement = document.getElementById('score');
+        const healthElement = document.getElementById('health');
+        const comboElement = document.getElementById('combo');
+        const finalScoreElement = document.getElementById('finalScore');
+        const highScoreElement = document.getElementById('highScore');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const healthFill = document.getElementById('healthFill');
+        
+        // 初始化遊戲
+        function initGame() {
+            // 重置遊戲狀態
+            score = 0;
+            health = 3;
+            combo = 0;
+            gameTime = 0;
+            
+            // 初始化洞
+            holes.length = 0;
+            for (let i = 0; i < holeCount; i++) {
+                holes.push({
+                    x: (i % 3) * 250 + 100,
+                    y: Math.floor(i / 3) * 200 + 100,
+                    width: 120,
+                    height: 80,
+                    hasFrog: false
+                });
+            }
+            
+            // 初始化青蛙
+            frogs.length = 0;
+            
+            // 初始化斧頭
+            axes.length = 0;
+            
+            // 更新顯示
+            scoreElement.textContent = score;
+            healthElement.textContent = health;
+            comboElement.textContent = combo;
+            healthFill.style.width = '100%';
+            
+            // 隱藏遊戲結束畫面
+            gameOverScreen.style.display = 'none';
+            
+            // 繪製初始畫面
+            draw();
+            
+            // 顯示開始提示
+            showStartMessage();
+        }
+        
+        // 顯示開始提示
+        function showStartMessage() {
+            ctx.fillStyle = 'rgba(0,0,0,0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#8B4513';
+            ctx.font = 'bold 40px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('打青蛙遊戲', canvas.width/2, canvas.height/2 - 50);
+            
+            ctx.fillStyle = '#FFD700';
+            ctx.font = '24px Arial';
+            ctx.fillText('按空白鍵開始遊戲', canvas.width/2, canvas.height/2);
+            ctx.fillText('當青蛙出現時，按空白鍵讓牠躲回洞中', canvas.width/2, canvas.height/2 + 40);
+            ctx.fillText('躲避斧頭攻擊！', canvas.width/2, canvas.height/2 + 80);
+        }
+        
+        // 繪製遊戲
+        function draw() {
+            // 清除畫布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 繪製草地背景
+            drawBackground();
+            
+            // 繪製洞
+            for (let hole of holes) {
+                drawHole(hole);
+            }
+            
+            // 繪製青蛙
+            for (let frog of frogs) {
+                drawFrog(frog);
+            }
+            
+            // 繪製斧頭
+            for (let axe of axes) {
+                drawAxe(axe);
+            }
+            
+            // 繪製UI
+            drawUI();
+        }
+        
+        // 繪製背景
+        function drawBackground() {
+            // 草地
+            ctx.fillStyle = '#2d5019';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 草叢紋理
+            ctx.fillStyle = '#3a6523';
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                ctx.beginPath();
+                ctx.ellipse(x, y, 3, 10, Math.random() * Math.PI, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // 地面
+            ctx.fillStyle = '#5d2d0c';
+            ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+        }
+        
+        // 繪製洞
+        function drawHole(hole) {
+            // 洞的邊緣
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath();
+            ctx.ellipse(hole.x + hole.width/2, hole.y + hole.height/2, 
+                       hole.width/2 + 10, hole.height/2 + 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 洞的內部
+            ctx.fillStyle = '#3d1e08';
+            ctx.beginPath();
+            ctx.ellipse(hole.x + hole.width/2, hole.y + hole.height/2, 
+                       hole.width/2, hole.height/2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 洞的陰影
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.beginPath();
+            ctx.ellipse(hole.x + hole.width/2 - 5, hole.y + hole.height/2 + 5, 
+                       hole.width/2, hole.height/2, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // 繪製青蛙
+        function drawFrog(frog) {
+            const hole = holes[frog.holeIndex];
+            
+            // 青蛙身體
+            ctx.fillStyle = frog.color;
+            const frogHeight = frog.visible ? 60 : 30;
+            const frogY = hole.y + hole.height - frogHeight;
+            
+            ctx.beginPath();
+            ctx.ellipse(hole.x + hole.width/2, frogY, 
+                       40, frogHeight/2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 青蛙眼睛
+            if (frog.visible) {
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(hole.x + hole.width/2 - 15, frogY - 10, 8, 0, Math.PI * 2);
+                ctx.arc(hole.x + hole.width/2 + 15, frogY - 10, 8, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(hole.x + hole.width/2 - 15, frogY - 10, 4, 0, Math.PI * 2);
+                ctx.arc(hole.x + hole.width/2 + 15, frogY - 10, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 青蛙嘴巴
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(hole.x + hole.width/2, frogY + 5, 10, 0, Math.PI);
+                ctx.stroke();
+            }
+        }
+        
+        // 繪製斧頭
+        function drawAxe(axe) {
+            const hole = holes[axe.targetHole];
+            
+            // 斧頭柄
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(axe.x - 5, axe.y, 10, axe.height);
+            
+            // 斧頭刀刃
+            ctx.fillStyle = '#C0C0C0';
+            ctx.beginPath();
+            ctx.moveTo(axe.x - 20, axe.y + 10);
+            ctx.lineTo(axe.x + 20, axe.y + 10);
+            ctx.lineTo(axe.x, axe.y + 40);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 斧頭刀刃邊緣
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(axe.x - 18, axe.y + 12);
+            ctx.lineTo(axe.x + 18, axe.y + 12);
+            ctx.lineTo(axe.x, axe.y + 38);
+            ctx.closePath();
+            ctx.stroke();
+            
+            // 斧頭旋轉效果
+            ctx.save();
+            ctx.translate(axe.x, axe.y + axe.height/2);
+            ctx.rotate(axe.rotation);
+            ctx.translate(-axe.x, -axe.y - axe.height/2);
+        }
+        
+        // 繪製UI
+        function drawUI() {
+            // 警告文字
+            if (health < 2) {
+                ctx.fillStyle = '#FF4444';
+                ctx.font = 'bold 30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('警告！生命值過低！', canvas.width/2, 40);
+            }
+            
+            // 連擊特效
+            if (combo >= 5) {
+                ctx.fillStyle = '#FFD700';
+                ctx.font = 'bold 25px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${combo} 連擊！`, canvas.width/2, canvas.height - 20);
+            }
+        }
+        
+        // 更新遊戲邏輯
+        function update() {
+            if (!gameRunning) return;
+            
+            gameTime += 1/60;
+            
+            // 隨機生成青蛙
+            if (Math.random() < 0.02 && frogs.length < 3) {
+                spawnFrog();
+            }
+            
+            // 更新青蛙狀態
+            for (let i = frogs.length - 1; i >= 0; i--) {
+                const frog = frogs[i];
+                
+                // 更新青蛙計時器
+                frog.timer += 1/60;
+                
+                // 如果青蛙出現時間過長，生成斧頭
+                if (frog.visible && frog.timer > frog.maxTime) {
+                    spawnAxe(frog.holeIndex);
+                    frogs.splice(i, 1);
+                    health--;
+                    combo = 0;
+                    
+                    // 更新生命值顯示
+                    healthElement.textContent = health;
+                    healthFill.style.width = (health/3 * 100) + '%';
+                    
+                    // 檢查遊戲結束
+                    if (health <= 0) {
+                        gameOver();
+                        return;
+                    }
+                    continue;
+                }
+                
+                // 如果玩家按了空白鍵且青蛙可見，讓青蛙躲起來
+                if (spacePressed && frog.visible) {
+                    frog.visible = false;
+                    frog.timer = 0;
+                    score++;
+                    combo++;
+                    
+                    // 更新顯示
+                    scoreElement.textContent = score;
+                    comboElement.textContent = combo;
+                    
+                    // 移除青蛙
+                    setTimeout(() => {
+                        const index = frogs.indexOf(frog);
+                        if (index > -1) {
+                            frogs.splice(index, 1);
+                        }
+                    }, 500);
+                }
+                
+                // 隨機切換青蛙可見狀態
+                if (frog.timer > frog.switchTime) {
+                    frog.visible = !frog.visible;
+                    frog.timer = 0;
+                }
+            }
+            
+            // 更新斧頭
+            for (let i = axes.length - 1; i >= 0; i--) {
+                const axe = axes[i];
+                axe.y += axe.speed;
+                axe.rotation += 0.2;
+                
+                // 如果斧頭落地，移除它
+                if (axe.y > canvas.height) {
+                    axes.splice(i, 1);
+                }
+            }
+            
+            // 重置空格鍵狀態
+            spacePressed = false;
+        }
+        
+        // 生成青蛙
+        function spawnFrog() {
+            // 找一個沒有青蛙的洞
+            const availableHoles = [];
+            for (let i = 0; i < holes.length; i++) {
+                let hasFrog = false;
+                for (let frog of frogs) {
+                    if (frog.holeIndex === i) {
+                        hasFrog = true;
+                        break;
+                    }
+                }
+                if (!hasFrog) {
+                    availableHoles.push(i);
+                }
+            }
+            
+            if (availableHoles.length > 0) {
+                const holeIndex = availableHoles[Math.floor(Math.random() * availableHoles.length)];
+                const colors = ['#32CD32', '#228B22', '#7CFC00', '#00FF00', '#98FB98'];
+                
+                frogs.push({
+                    holeIndex: holeIndex,
+                    visible: false,
+                    timer: 0,
+                    switchTime: 1 + Math.random() * 2,
+                    maxTime: 3 + Math.random() * 2,
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+        }
+        
+        // 生成斧頭
+        function spawnAxe(holeIndex) {
+            const hole = holes[holeIndex];
+            
+            axes.push({
+                x: hole.x + hole.width/2,
+                y: -50,
+                height: 60,
+                speed: 8 + Math.random() * 4,
+                targetHole: holeIndex,
+                rotation: 0
+            });
+        }
+        
+        // 開始遊戲
+        function startGame() {
+            if (!gameRunning) {
+                gameRunning = true;
+                gameLoop = setInterval(() => {
+                    update();
+                    draw();
+                }, 1000 / 60);
+            }
+        }
+        
+        // 讓青蛙躲起來
+        function hideFrog() {
+            spacePressed = true;
+        }
+        
+        // 遊戲結束
+        function gameOver() {
+            gameRunning = false;
+            clearInterval(gameLoop);
+            
+            // 更新最高分
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('frogHighScore', highScore);
+            }
+            
+            // 顯示遊戲結束畫面
+            finalScoreElement.textContent = score;
+            highScoreElement.textContent = highScore;
+            gameOverScreen.style.display = 'flex';
+        }
+        
+        // 事件監聽
+        playAgainBtn.addEventListener('click', () => {
+            initGame();
+            startGame();
+        });
+        
+        // 鍵盤控制
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                if (!gameRunning) {
+                    startGame();
+                } else {
+                    hideFrog();
+                }
+                e.preventDefault();
+            }
+        });
+        
+        // 點擊控制（支援行動裝置）
+        canvas.addEventListener('click', () => {
+            if (!gameRunning) {
+                startGame();
+            } else {
+                hideFrog();
+            }
+        });
+        
+        // 初始化遊戲
+        initGame();
+    </script>
+</body>
+</html>
