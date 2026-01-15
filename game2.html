@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小型賽車遊戲</title>
+    <title>Blockbuster 積木遊戲</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #1a1a1a, #333);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             display: flex;
             flex-direction: column;
@@ -20,15 +20,14 @@
         }
         
         h1 {
-            color: #FF4444;
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .subtitle {
-            color: #aaa;
-            font-size: 1.2rem;
+            color: #ddd;
+            font-size: 1.1rem;
             margin-bottom: 20px;
             text-align: center;
         }
@@ -39,26 +38,28 @@
         }
         
         #gameCanvas {
-            background-color: #222;
-            border: 3px solid #444;
+            background-color: #111;
+            border: 3px solid #fff;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
         .score-container {
-            background: rgba(0,0,0,0.7);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
             padding: 15px 30px;
             border-radius: 10px;
             margin-top: 15px;
             text-align: center;
-            border: 2px solid #444;
+            border: 2px solid rgba(255,255,255,0.2);
             font-size: 1.2rem;
         }
         
         .score {
             font-weight: bold;
-            color: #FF4444;
+            color: #4CAF50;
             margin: 0 10px;
+            font-size: 1.5rem;
         }
         
         .game-over {
@@ -78,6 +79,7 @@
             color: #FF4444;
             font-size: 3rem;
             margin-bottom: 20px;
+            text-shadow: 2px 2px 0 #000;
         }
         
         .game-over p {
@@ -87,21 +89,28 @@
         }
         
         button {
-            background: #FF4444;
+            background: linear-gradient(to bottom, #4CAF50, #2E7D32);
             color: white;
             border: none;
             padding: 12px 25px;
             font-size: 1.1rem;
             border-radius: 5px;
             cursor: pointer;
-            margin: 5px;
+            margin: 10px;
             transition: all 0.2s;
             font-weight: bold;
+            border: 2px solid #1B5E20;
+            box-shadow: 0 5px 0 #1B5E20;
         }
         
         button:hover { 
-            background: #ff6666; 
-            transform: scale(1.05);
+            background: linear-gradient(to bottom, #66BB6A, #388E3C);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #1B5E20;
         }
         
         .controls {
@@ -110,83 +119,115 @@
         }
         
         .key-hint {
-            background: #444;
+            background: rgba(255,255,255,0.2);
             color: white;
             padding: 5px 15px;
             border-radius: 5px;
             margin: 0 5px;
             font-weight: bold;
+            display: inline-block;
         }
         
         .instructions {
-            background: rgba(0,0,0,0.7);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
             padding: 15px;
             border-radius: 10px;
             margin-top: 20px;
             max-width: 600px;
             text-align: center;
-            border: 2px solid #444;
+            border: 2px solid rgba(255,255,255,0.2);
         }
         
-        .position-indicator {
+        .level-indicator {
             position: absolute;
             top: 10px;
             right: 10px;
             background: rgba(0,0,0,0.7);
+            color: #4CAF50;
             padding: 5px 15px;
-            border-radius: 5px;
-            font-size: 1.2rem;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
             z-index: 5;
         }
         
-        .boost-bar {
-            width: 200px;
-            height: 20px;
-            background: #444;
-            border-radius: 10px;
-            margin: 10px auto;
-            overflow: hidden;
+        .combo-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5;
         }
         
-        .boost-fill {
-            height: 100%;
-            background: linear-gradient(to right, #00ff00, #ffff00, #ff4444);
-            width: 0%;
-            transition: width 0.1s;
+        @keyframes comboAnimation {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+        
+        .mobile-controls {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            width: 300px;
+        }
+        
+        .mobile-controls button {
+            font-size: 1.5rem;
+            padding: 20px;
+        }
+        
+        @media (max-width: 650px) {
+            #gameCanvas { width: 95vw; height: 60vh; }
+            h1 { font-size: 2rem; }
+            .mobile-controls { display: grid; }
         }
     </style>
 </head>
 <body>
-    <h1>小型賽車遊戲</h1>
-    <p class="subtitle">按空白鍵加速，躲避其他車輛，爭取第一名！</p>
+    <h1>Blockbuster 積木遊戲</h1>
+    <p class="subtitle">用方向鍵控制球拍，反彈球擊碎積木！</p>
     
     <div class="game-container">
         <canvas id="gameCanvas" width="800" height="500"></canvas>
         
-        <div class="position-indicator" id="positionIndicator">名次: -</div>
+        <div class="level-indicator" id="levelIndicator">關卡: 1</div>
+        
+        <div class="combo-display" id="comboDisplay"></div>
         
         <div class="game-over" id="gameOverScreen">
-            <h2>比賽結束！</h2>
-            <p>你的名次: 第 <span id="finalPosition" class="score">1</span> 名</p>
-            <p>完成時間: <span id="finalTime" class="score">0</span> 秒</p>
-            <button id="playAgainBtn">再賽一次</button>
+            <h2>遊戲結束！</h2>
+            <p>總分數: <span id="finalScore" class="score">0</span></p>
+            <p>最高分數: <span id="highScore" class="score">0</span></p>
+            <button id="playAgainBtn">再玩一次</button>
         </div>
     </div>
     
     <div class="score-container">
-        速度: <span class="score" id="speed">0</span> km/h |
-        名次: <span class="score" id="position">-</span> |
-        時間: <span class="score" id="time">0</span> 秒
+        分數: <span class="score" id="score">0</span> |
+        球數: <span class="score" id="balls">3</span> |
+        關卡: <span class="score" id="level">1</span>
     </div>
     
-    <div class="boost-bar">
-        <div class="boost-fill" id="boostFill"></div>
+    <div class="mobile-controls">
+        <button id="upBtn">↑</button>
+        <button id="leftBtn">←</button>
+        <button id="downBtn">↓</button>
+        <button id="rightBtn">→</button>
     </div>
     
     <div class="instructions">
-        <p>控制方式: <span class="key-hint">←</span> <span class="key-hint">→</span> 左右移動 | 
-           <span class="key-hint">空白鍵</span> 加速</p>
-        <p>小心不要撞到其他車輛！</p>
+        <p>控制方式: <span class="key-hint">←</span> <span class="key-hint">→</span> 移動球拍</p>
+        <p>擊碎所有積木進入下一關，每關增加新積木</p>
     </div>
 
     <script>
@@ -197,88 +238,82 @@
         // 遊戲變數
         let gameRunning = false;
         let gameLoop;
-        let raceFinished = false;
-        let gameTime = 0;
-        let playerPosition = 0;
+        let score = 0;
+        let highScore = localStorage.getItem('blockHighScore') || 0;
+        let level = 1;
+        let balls = 3;
+        let combo = 0;
         
-        // 玩家賽車
-        const playerCar = {
-            x: canvas.width / 2 - 25,
-            y: canvas.height - 100,
-            width: 50,
-            height: 80,
-            speed: 0,
-            maxSpeed: 15,
-            acceleration: 0.2,
-            deceleration: 0.1,
-            turningSpeed: 5,
-            color: '#FF4444',
-            nitro: 100,
-            nitroBoost: 0.5
+        // 遊戲物件
+        const paddle = {
+            x: canvas.width / 2 - 75,
+            y: canvas.height - 30,
+            width: 150,
+            height: 20,
+            speed: 8,
+            color: '#4CAF50'
         };
         
-        // 其他車輛
-        let cars = [];
-        const roadWidth = 400;
-        const roadX = (canvas.width - roadWidth) / 2;
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height - 50,
+            radius: 10,
+            dx: 5,
+            dy: -5,
+            speed: 5,
+            color: '#FF4444'
+        };
         
-        // 賽道標記
-        let roadMarkers = [];
+        // 積木陣列
+        let bricks = [];
+        const brickRowCount = 5;
+        const brickColumnCount = 10;
+        const brickWidth = 70;
+        const brickHeight = 25;
+        const brickPadding = 10;
+        const brickOffsetTop = 60;
+        const brickOffsetLeft = 35;
         
         // DOM元素
-        const speedElement = document.getElementById('speed');
-        const positionElement = document.getElementById('position');
-        const timeElement = document.getElementById('time');
-        const finalPositionElement = document.getElementById('finalPosition');
-        const finalTimeElement = document.getElementById('finalTime');
+        const scoreElement = document.getElementById('score');
+        const ballsElement = document.getElementById('balls');
+        const levelElement = document.getElementById('level');
+        const levelIndicator = document.getElementById('levelIndicator');
+        const finalScoreElement = document.getElementById('finalScore');
+        const highScoreElement = document.getElementById('highScore');
         const gameOverScreen = document.getElementById('gameOverScreen');
         const playAgainBtn = document.getElementById('playAgainBtn');
-        const positionIndicator = document.getElementById('positionIndicator');
-        const boostFill = document.getElementById('boostFill');
+        const comboDisplay = document.getElementById('comboDisplay');
+        
+        // 移動控制按鈕
+        const upBtn = document.getElementById('upBtn');
+        const downBtn = document.getElementById('downBtn');
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
         
         // 初始化遊戲
         function initGame() {
-            // 重置玩家賽車
-            playerCar.x = canvas.width / 2 - 25;
-            playerCar.y = canvas.height - 100;
-            playerCar.speed = 0;
-            playerCar.nitro = 100;
-            
             // 重置遊戲狀態
-            cars = [];
-            roadMarkers = [];
-            gameTime = 0;
-            playerPosition = 0;
-            raceFinished = false;
+            score = 0;
+            level = 1;
+            balls = 3;
+            combo = 0;
             
-            // 初始化賽道標記
-            for (let i = 0; i < 20; i++) {
-                roadMarkers.push({
-                    x: canvas.width / 2 - 5,
-                    y: -i * 100
-                });
-            }
+            // 重置球拍
+            paddle.x = canvas.width / 2 - 75;
+            paddle.color = '#4CAF50';
             
-            // 初始化其他車輛
-            const carColors = ['#3366FF', '#33CC33', '#FF33CC', '#FF9933', '#33FFFF'];
-            for (let i = 0; i < 5; i++) {
-                cars.push({
-                    x: roadX + 50 + (i % 3) * 100,
-                    y: -i * 150,
-                    width: 50,
-                    height: 80,
-                    speed: 3 + Math.random() * 4,
-                    color: carColors[i % carColors.length],
-                    lane: i % 3
-                });
-            }
+            // 重置球
+            resetBall();
+            
+            // 生成積木
+            generateBricks();
             
             // 更新顯示
-            speedElement.textContent = Math.round(playerCar.speed * 10);
-            positionElement.textContent = '-';
-            timeElement.textContent = '0';
-            positionIndicator.textContent = '名次: -';
-            boostFill.style.width = '100%';
+            scoreElement.textContent = score;
+            ballsElement.textContent = balls;
+            levelElement.textContent = level;
+            levelIndicator.textContent = `關卡: ${level}`;
             
             // 隱藏遊戲結束畫面
             gameOverScreen.style.display = 'none';
@@ -295,15 +330,43 @@
             ctx.fillStyle = 'rgba(0,0,0,0.8)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.fillStyle = '#FF4444';
-            ctx.font = '40px Arial';
+            ctx.fillStyle = '#4CAF50';
+            ctx.font = 'bold 40px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('小型賽車遊戲', canvas.width/2, canvas.height/2 - 50);
+            ctx.fillText('Blockbuster', canvas.width/2, canvas.height/2 - 50);
             
             ctx.fillStyle = 'white';
-            ctx.font = '20px Arial';
-            ctx.fillText('按空白鍵開始比賽並加速', canvas.width/2, canvas.height/2);
-            ctx.fillText('使用左右方向鍵移動', canvas.width/2, canvas.height/2 + 30);
+            ctx.font = '24px Arial';
+            ctx.fillText('按任意鍵開始遊戲', canvas.width/2, canvas.height/2);
+            ctx.fillText('使用左右方向鍵移動球拍', canvas.width/2, canvas.height/2 + 40);
+            ctx.fillText('擊碎所有積木獲得分數', canvas.width/2, canvas.height/2 + 80);
+        }
+        
+        // 生成積木
+        function generateBricks() {
+            bricks = [];
+            const colors = [
+                '#FF4444', '#FF8800', '#FFD700', 
+                '#4CAF50', '#2196F3', '#9C27B0'
+            ];
+            
+            for (let r = 0; r < brickRowCount + level - 1; r++) {
+                for (let c = 0; c < brickColumnCount; c++) {
+                    const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+                    const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+                    const colorIndex = Math.min(r, colors.length - 1);
+                    
+                    bricks.push({
+                        x: brickX,
+                        y: brickY,
+                        width: brickWidth,
+                        height: brickHeight,
+                        color: colors[colorIndex],
+                        points: (colors.length - colorIndex) * 10,
+                        visible: true
+                    });
+                }
+            }
         }
         
         // 繪製遊戲
@@ -311,213 +374,304 @@
             // 清除畫布
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // 繪製天空
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#1a1a1a');
-            gradient.addColorStop(1, '#333333');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // 繪製背景
+            drawBackground();
             
-            // 繪製賽道
-            drawRoad();
-            
-            // 繪製賽道標記
-            drawRoadMarkers();
-            
-            // 繪製其他車輛
-            for (let car of cars) {
-                drawCar(car);
+            // 繪製積木
+            for (let brick of bricks) {
+                if (brick.visible) {
+                    drawBrick(brick);
+                }
             }
             
-            // 繪製玩家賽車
-            drawCar(playerCar);
+            // 繪製球拍
+            drawPaddle();
+            
+            // 繪製球
+            drawBall();
             
             // 繪製UI
             drawUI();
         }
         
-        // 繪製賽道
-        function drawRoad() {
-            // 賽道
-            ctx.fillStyle = '#555';
-            ctx.fillRect(roadX, 0, roadWidth, canvas.height);
+        // 繪製背景
+        function drawBackground() {
+            // 漸變背景
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(1, '#16213e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // 賽道邊緣
-            ctx.fillStyle = '#888';
-            ctx.fillRect(roadX - 10, 0, 10, canvas.height);
-            ctx.fillRect(roadX + roadWidth, 0, 10, canvas.height);
+            // 網格效果
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
             
-            // 賽道紋理
-            ctx.strokeStyle = '#666';
-            ctx.lineWidth = 2;
-            for (let i = 0; i < 5; i++) {
-                const y = (canvas.height / 5) * i;
+            // 垂直線
+            for (let x = 0; x < canvas.width; x += 50) {
                 ctx.beginPath();
-                ctx.moveTo(roadX, y);
-                ctx.lineTo(roadX + roadWidth, y);
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            // 水平線
+            for (let y = 0; y < canvas.height; y += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
                 ctx.stroke();
             }
         }
         
-        // 繪製賽道標記
-        function drawRoadMarkers() {
+        // 繪製積木
+        function drawBrick(brick) {
+            // 積木主體
+            ctx.fillStyle = brick.color;
+            ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+            
+            // 積木邊框
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(brick.x, brick.y, brick.width, brick.height);
+            
+            // 積木內陰影
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.fillRect(brick.x + 2, brick.y + 2, brick.width - 4, 5);
+            
+            // 積木編號（視覺效果）
             ctx.fillStyle = 'white';
-            for (let marker of roadMarkers) {
-                ctx.fillRect(marker.x, marker.y, 10, 30);
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(brick.points, brick.x + brick.width/2, brick.y + brick.height/2 + 4);
+        }
+        
+        // 繪製球拍
+        function drawPaddle() {
+            // 球拍主體
+            ctx.fillStyle = paddle.color;
+            ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+            
+            // 球拍邊框
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(paddle.x, paddle.y, paddle.width, paddle.height);
+            
+            // 球拍紋理
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            for (let i = 0; i < paddle.width; i += 10) {
+                ctx.fillRect(paddle.x + i, paddle.y, 5, 5);
             }
         }
         
-        // 繪製車輛
-        function drawCar(car) {
-            // 車身
-            ctx.fillStyle = car.color;
-            ctx.fillRect(car.x, car.y, car.width, car.height);
+        // 繪製球
+        function drawBall() {
+            // 球主體
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
             
-            // 車窗
-            ctx.fillStyle = '#aaccff';
-            ctx.fillRect(car.x + 5, car.y + 5, car.width - 10, 25);
+            // 球光影效果
+            const gradient = ctx.createRadialGradient(
+                ball.x - 3, ball.y - 3, 1,
+                ball.x, ball.y, ball.radius
+            );
+            gradient.addColorStop(0, 'rgba(255,255,255,0.8)');
+            gradient.addColorStop(1, ball.color);
             
-            // 車燈
-            ctx.fillStyle = '#ffff00';
-            ctx.fillRect(car.x + 5, car.y + car.height - 10, 10, 5);
-            ctx.fillRect(car.x + car.width - 15, car.y + car.height - 10, 10, 5);
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
             
-            // 輪胎
-            ctx.fillStyle = '#222';
-            ctx.fillRect(car.x - 5, car.y + 15, 5, 20);
-            ctx.fillRect(car.x + car.width, car.y + 15, 5, 20);
-            ctx.fillRect(car.x - 5, car.y + car.height - 35, 5, 20);
-            ctx.fillRect(car.x + car.width, car.y + car.height - 35, 5, 20);
-            
-            // 如果是玩家賽車，繪製特殊標記
-            if (car === playerCar) {
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 14px Arial';
-                ctx.fillText('PLAYER', car.x + 10, car.y + 20);
-                
-                // 氮氣效果
-                if (playerCar.nitro < 30) {
-                    ctx.fillStyle = 'rgba(255, 68, 68, 0.5)';
-                    ctx.fillRect(car.x, car.y + car.height, car.width, 5);
-                }
-            }
+            // 球邊框
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
         }
         
         // 繪製UI
         function drawUI() {
-            // 賽道邊界警告
-            if (playerCar.x < roadX + 20 || playerCar.x + playerCar.width > roadX + roadWidth - 20) {
-                ctx.fillStyle = 'rgba(255, 68, 68, 0.3)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // 生命值顯示
+            for (let i = 0; i < balls; i++) {
+                ctx.fillStyle = '#FF4444';
+                ctx.beginPath();
+                ctx.arc(30 + i * 30, 30, 8, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
         
         // 更新遊戲邏輯
         function update() {
-            // 更新時間
-            gameTime += 1/60;
-            timeElement.textContent = gameTime.toFixed(1);
+            // 移動球
+            ball.x += ball.dx;
+            ball.y += ball.dy;
             
-            // 更新玩家位置
-            updatePlayerPosition();
+            // 球碰牆反彈（左右牆）
+            if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                ball.dx = -ball.dx;
+            }
             
-            // 更新賽道標記
-            for (let marker of roadMarkers) {
-                marker.y += playerCar.speed * 2;
-                if (marker.y > canvas.height) {
-                    marker.y = -30;
+            // 球碰牆反彈（上牆）
+            if (ball.y - ball.radius < 0) {
+                ball.dy = -ball.dy;
+            }
+            
+            // 球碰球拍反彈
+            if (ball.y + ball.radius > paddle.y &&
+                ball.y - ball.radius < paddle.y + paddle.height &&
+                ball.x > paddle.x &&
+                ball.x < paddle.x + paddle.width) {
+                
+                // 根據擊中位置調整反彈角度
+                const hitPos = (ball.x - paddle.x) / paddle.width;
+                ball.dx = 10 * (hitPos - 0.5);
+                ball.dy = -Math.abs(ball.dy);
+                
+                // 擊中效果
+                paddle.color = '#66BB6A';
+                setTimeout(() => {
+                    paddle.color = '#4CAF50';
+                }, 100);
+            }
+            
+            // 球掉落（失去生命）
+            if (ball.y + ball.radius > canvas.height) {
+                balls--;
+                ballsElement.textContent = balls;
+                
+                if (balls <= 0) {
+                    gameOver();
+                    return;
+                } else {
+                    resetBall();
+                    combo = 0;
                 }
             }
             
-            // 更新其他車輛
-            for (let car of cars) {
-                car.y += car.speed + playerCar.speed * 0.5;
-                
-                // 更換車道
-                if (Math.random() < 0.01) {
-                    car.lane = Math.floor(Math.random() * 3);
-                }
-                
-                // 更新車輛位置到車道
-                const targetX = roadX + 50 + car.lane * 100;
-                car.x += (targetX - car.x) * 0.05;
-                
-                // 檢查是否超出畫面
-                if (car.y > canvas.height) {
-                    car.y = -200;
-                    car.lane = Math.floor(Math.random() * 3);
-                }
-                
-                // 檢查碰撞
-                if (checkCollision(playerCar, car)) {
-                    playerCar.speed *= 0.5;
-                    playerCar.nitro = Math.max(0, playerCar.nitro - 20);
-                }
-            }
+            // 檢查積木碰撞
+            checkBrickCollision();
             
-            // 更新名次
-            updatePosition();
-            
-            // 檢查比賽是否結束
-            if (playerCar.y < -500 && !raceFinished) {
-                finishRace();
+            // 檢查是否清除所有積木
+            if (bricks.every(brick => !brick.visible)) {
+                levelUp();
             }
         }
         
-        // 更新玩家位置
-        function updatePlayerPosition() {
-            // 自然減速
-            if (playerCar.speed > 0) {
-                playerCar.speed -= playerCar.deceleration * 0.5;
+        // 檢查積木碰撞
+        function checkBrickCollision() {
+            for (let brick of bricks) {
+                if (brick.visible) {
+                    if (ball.x + ball.radius > brick.x &&
+                        ball.x - ball.radius < brick.x + brick.width &&
+                        ball.y + ball.radius > brick.y &&
+                        ball.y - ball.radius < brick.y + brick.height) {
+                        
+                        // 隱藏積木
+                        brick.visible = false;
+                        
+                        // 增加分數
+                        score += brick.points;
+                        combo++;
+                        
+                        // 顯示連擊
+                        if (combo >= 3) {
+                            showCombo(combo);
+                        }
+                        
+                        // 更新顯示
+                        scoreElement.textContent = score;
+                        
+                        // 反彈球
+                        const hitFromLeft = ball.x < brick.x;
+                        const hitFromRight = ball.x > brick.x + brick.width;
+                        const hitFromTop = ball.y < brick.y;
+                        const hitFromBottom = ball.y > brick.y + brick.height;
+                        
+                        if (hitFromLeft || hitFromRight) {
+                            ball.dx = -ball.dx;
+                        }
+                        if (hitFromTop || hitFromBottom) {
+                            ball.dy = -ball.dy;
+                        }
+                        
+                        // 打破積木效果
+                        createParticles(brick.x + brick.width/2, brick.y + brick.height/2, brick.color);
+                        break;
+                    }
+                }
             }
+        }
+        
+        // 顯示連擊效果
+        function showCombo(count) {
+            comboDisplay.textContent = `${count} Combo!`;
+            comboDisplay.style.animation = 'comboAnimation 1s forwards';
             
-            // 更新氮氣
-            if (playerCar.nitro < 100) {
-                playerCar.nitro += 0.2;
-                boostFill.style.width = playerCar.nitro + '%';
+            setTimeout(() => {
+                comboDisplay.style.animation = '';
+            }, 1000);
+        }
+        
+        // 創建粒子效果
+        function createParticles(x, y, color) {
+            // 簡化的粒子效果
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }, i * 50);
             }
+        }
+        
+        // 重置球
+        function resetBall() {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height - 50;
+            ball.dx = 5 * (Math.random() > 0.5 ? 1 : -1);
+            ball.dy = -5;
+        }
+        
+        // 升級
+        function levelUp() {
+            level++;
+            balls++;
+            
+            // 更新顯示
+            levelElement.textContent = level;
+            ballsElement.textContent = balls;
+            levelIndicator.textContent = `關卡: ${level}`;
+            
+            // 增加球速
+            ball.speed += 0.5;
+            ball.dx = ball.dx > 0 ? ball.speed : -ball.speed;
+            ball.dy = ball.dy > 0 ? ball.speed : -ball.speed;
+            
+            // 生成新積木
+            generateBricks();
+            
+            // 重置球
+            resetBall();
+        }
+        
+        // 移動球拍
+        function movePaddle(direction) {
+            if (!gameRunning) return;
+            
+            paddle.x += direction * paddle.speed;
             
             // 邊界檢查
-            const minX = roadX;
-            const maxX = roadX + roadWidth - playerCar.width;
-            
-            if (playerCar.x < minX) {
-                playerCar.x = minX;
-                playerCar.speed *= 0.8;
-            } else if (playerCar.x > maxX) {
-                playerCar.x = maxX;
-                playerCar.speed *= 0.8;
+            if (paddle.x < 0) {
+                paddle.x = 0;
             }
-            
-            // 更新速度顯示
-            speedElement.textContent = Math.round(playerCar.speed * 10);
-        }
-        
-        // 檢查碰撞
-        function checkCollision(car1, car2) {
-            return car1.x < car2.x + car2.width &&
-                   car1.x + car1.width > car2.x &&
-                   car1.y < car2.y + car2.height &&
-                   car1.y + car1.height > car2.y;
-        }
-        
-        // 更新名次
-        function updatePosition() {
-            let position = 1;
-            for (let car of cars) {
-                if (car.y < playerCar.y) {
-                    position++;
-                }
+            if (paddle.x + paddle.width > canvas.width) {
+                paddle.x = canvas.width - paddle.width;
             }
-            playerPosition = position;
-            positionElement.textContent = position;
-            positionIndicator.textContent = `名次: ${position}`;
-        }
-        
-        // 完成比賽
-        function finishRace() {
-            raceFinished = true;
-            gameOver();
         }
         
         // 開始遊戲
@@ -531,66 +685,62 @@
             }
         }
         
-        // 加速
-        function accelerate() {
-            if (!gameRunning) {
-                startGame();
-                return;
-            }
-            
-            if (playerCar.speed < playerCar.maxSpeed) {
-                playerCar.speed += playerCar.acceleration;
-            }
-            
-            // 使用氮氣加速
-            if (playerCar.nitro > 0) {
-                playerCar.speed += playerCar.nitroBoost;
-                playerCar.nitro -= 1;
-                boostFill.style.width = playerCar.nitro + '%';
-            }
-        }
-        
-        // 移動
-        function move(direction) {
-            if (gameRunning) {
-                playerCar.x += direction * playerCar.turningSpeed;
-            }
-        }
-        
         // 遊戲結束
         function gameOver() {
             gameRunning = false;
             clearInterval(gameLoop);
             
+            // 更新最高分
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('blockHighScore', highScore);
+            }
+            
             // 顯示遊戲結束畫面
-            finalPositionElement.textContent = playerPosition;
-            finalTimeElement.textContent = gameTime.toFixed(1);
+            finalScoreElement.textContent = score;
+            highScoreElement.textContent = highScore;
             gameOverScreen.style.display = 'flex';
         }
         
         // 事件監聽
-        playAgainBtn.addEventListener('click', initGame);
+        playAgainBtn.addEventListener('click', () => {
+            initGame();
+            startGame();
+        });
         
         // 鍵盤控制
         const keys = {};
         document.addEventListener('keydown', (e) => {
             keys[e.key] = true;
             
-            if (e.key === ' ') {
-                accelerate();
-                e.preventDefault();
+            if (!gameRunning && e.key) {
+                startGame();
             }
             
             if (e.key === 'ArrowLeft') {
-                move(-1);
+                movePaddle(-1);
             }
             if (e.key === 'ArrowRight') {
-                move(1);
+                movePaddle(1);
             }
         });
         
         document.addEventListener('keyup', (e) => {
             keys[e.key] = false;
+        });
+        
+        // 移動控制按鈕事件
+        leftBtn.addEventListener('mousedown', () => movePaddle(-1));
+        leftBtn.addEventListener('touchstart', () => movePaddle(-1));
+        
+        rightBtn.addEventListener('mousedown', () => movePaddle(1));
+        rightBtn.addEventListener('touchstart', () => movePaddle(1));
+        
+        // 點擊開始遊戲
+        canvas.addEventListener('click', () => {
+            if (!gameRunning) {
+                startGame();
+            }
         });
         
         // 初始化遊戲
