@@ -31,7 +31,7 @@ open http://localhost:8000/game2.html  # Tic-tac-toe
 ## Code Style Guidelines
 
 ### HTML Structure
-- Use semantic HTML5 elements (`<header>`, `<main>`, `<section>`, etc.)
+-  Use semantic HTML5 elements (`<header>`, `<main>`, `<section>`, etc.)
 - All pages use Traditional Chinese (`zh-HK` or `zh-TW`)
 - Include proper viewport meta tag for responsiveness
 - Use external CDN for Font Awesome icons and Google Fonts
