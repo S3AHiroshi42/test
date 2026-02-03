@@ -3,7 +3,7 @@
  * 提供統一的音效播放、音量控制和音效預加載功能
  */
 
-class AudioManager {
+ class AudioManager {
     constructor() {
         this.audioContext = null;
         this.sounds = new Map();
