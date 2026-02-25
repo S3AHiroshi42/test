@@ -1,0 +1,587 @@
+    <!DOCTYPE html>
+ <html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恐龍跳躍遊戲</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .game-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        #gameCanvas {
+            background-color: #f7f7f7;
+            border: 3px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .score-container {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            border: 2px solid #333;
+            font-size: 1.2rem;
+        }
+        
+        .score {
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 0 10px;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            z-index: 10;
+        }
+        
+        .game-over h2 {
+            color: #ff4444;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .game-over p {
+            color: white;
+            font-size: 1.3rem;
+            margin: 10px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.2s;
+        }
+        
+        button:hover { background: #45a049; transform: scale(1.05); }
+        button:active { transform: scale(0.95); }
+        
+        .instructions {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-width: 600px;
+            text-align: center;
+            border: 2px solid #333;
+        }
+        
+        .key-hint {
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .difficulty-indicator {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .next-obstacle-warning {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: none;
+            z-index: 5;
+        }
+        
+        .mobile-controls {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .mobile-controls button {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            margin: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            #gameCanvas {
+                width: 95vw;
+                height: auto;
+            }
+            
+            .mobile-controls {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>恐龍跳躍遊戲</h1>
+    
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="300"></canvas>
+        
+        <div class="next-obstacle-warning" id="nextObstacleWarning">注意！障礙物接近！</div>
+        
+        <div class="game-over" id="gameOverScreen">
+            <h2>遊戲結束！</h2>
+            <p>你通過了 <span id="finalLevel" class="score">1</span> 關</p>
+            <p>分數: <span id="finalScore" class="score">0</span></p>
+            <p>最高分: <span id="finalHighScore" class="score">0</span></p>
+            <button id="playAgainBtn">再玩一次</button>
+        </div>
+    </div>
+    
+    <div class="score-container">
+        分數: <span class="score" id="score">0</span> | 
+        關卡: <span class="score" id="level">1</span> | 
+        最高分: <span class="score" id="highScore">0</span>
+    </div>
+    
+    <div class="mobile-controls">
+        <button id="jumpBtn">跳躍</button>
+    </div>
+    
+    <div class="instructions">
+        <p>按 <span class="key-hint">空白鍵</span> 跳躍躲避障礙物</p>
+        <p>每過100分進入下一關，速度會增加</p>
+        <p class="difficulty-indicator">障礙物間距已優化，確保可玩性</p>
+    </div>
+
+    <script>
+        // 取得Canvas元素
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 遊戲變數
+        let gameRunning = false;
+        let gameLoop;
+        let score = 0;
+        let level = 1;
+        let highScore = localStorage.getItem('dinoHighScore') || 0;
+        let gameSpeed = 5;
+        let gameStarted = false;
+        let lastObstacleTime = 0;
+        let minObstacleDistance = 300; // 最小障礙物間距
+        
+        // 恐龍物件
+        const dino = {
+            x: 50,
+            y: 200,
+            width: 40,
+            height: 60,
+            jumping: false,
+            velocity: 0,
+            gravity: 0.5,
+            jumpPower: -12,
+            maxJumpHeight: 100
+        };
+        
+        // 障礙物陣列
+        let obstacles = [];
+        const groundY = 250;
+        
+        // DOM元素
+        const scoreElement = document.getElementById('score');
+        const levelElement = document.getElementById('level');
+        const highScoreElement = document.getElementById('highScore');
+        const finalScoreElement = document.getElementById('finalScore');
+        const finalLevelElement = document.getElementById('finalLevel');
+        const finalHighScoreElement = document.getElementById('finalHighScore');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const jumpBtn = document.getElementById('jumpBtn');
+        const nextObstacleWarning = document.getElementById('nextObstacleWarning');
+        
+        // 初始化遊戲
+        function initGame() {
+            // 重置遊戲狀態
+            dino.y = 200;
+            dino.jumping = false;
+            dino.velocity = 0;
+            obstacles = [];
+            score = 0;
+            level = 1;
+            gameSpeed = 5;
+            gameStarted = false;
+            lastObstacleTime = 0;
+            minObstacleDistance = 300;
+            
+            // 更新顯示
+            scoreElement.textContent = score;
+            levelElement.textContent = level;
+            highScoreElement.textContent = highScore;
+            
+            // 隱藏警告和遊戲結束畫面
+            nextObstacleWarning.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            
+            // 繪製初始畫面
+            draw();
+            
+            // 顯示開始提示
+            showStartMessage();
+        }
+        
+        // 顯示開始提示
+        function showStartMessage() {
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'white';
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('按空白鍵開始遊戲', canvas.width/2, canvas.height/2 - 20);
+            ctx.font = '20px Arial';
+            ctx.fillText('按空白鍵跳躍', canvas.width/2, canvas.height/2 + 20);
+            ctx.fillText('障礙物間距已優化', canvas.width/2, canvas.height/2 + 50);
+        }
+        
+        // 繪製遊戲
+        function draw() {
+            // 清除畫布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 繪製天空
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 繪製地面
+            ctx.fillStyle = '#8B7355';
+            ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+            
+            // 地面紋理
+            ctx.fillStyle = '#A0522D';
+            for (let i = 0; i < canvas.width; i += 20) {
+                ctx.fillRect(i, groundY, 10, 5);
+            }
+            
+            // 繪製恐龍
+            drawDino();
+            
+            // 繪製障礙物
+            for (let obstacle of obstacles) {
+                drawObstacle(obstacle);
+            }
+            
+            // 繪製分數
+            ctx.fillStyle = '#333';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText(`分數: ${score}`, 10, 25);
+            ctx.fillText(`關卡: ${level}`, 10, 50);
+            ctx.fillText(`速度: ${gameSpeed.toFixed(1)}`, 10, 75);
+        }
+        
+        // 繪製恐龍
+        function drawDino() {
+            ctx.fillStyle = '#555';
+            // 身體
+            ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+            
+            // 眼睛
+            ctx.fillStyle = 'white';
+            ctx.fillRect(dino.x + 25, dino.y + 10, 8, 8);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(dino.x + 28, dino.y + 13, 4, 4);
+            
+            // 嘴巴
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(dino.x + 35, dino.y + 25);
+            ctx.lineTo(dino.x + 45, dino.y + 22);
+            ctx.stroke();
+            
+            // 腿（動畫效果）
+            ctx.fillStyle = '#555';
+            const legOffset = dino.jumping ? 0 : Math.sin(Date.now() / 100) * 3;
+            ctx.fillRect(dino.x - 5, dino.y + dino.height - 10 + legOffset, 10, 15);
+            ctx.fillRect(dino.x + dino.width - 5, dino.y + dino.height - 10 - legOffset, 10, 15);
+            
+            // 如果跳躍中，顯示跳躍特效
+            if (dino.jumping) {
+                ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
+                ctx.beginPath();
+                ctx.arc(dino.x + dino.width/2, dino.y + dino.height, 15, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // 繪製障礙物
+        function drawObstacle(obstacle) {
+            ctx.fillStyle = obstacle.color || '#2E8B57';
+            
+            // 主幹
+            ctx.fillRect(obstacle.x, groundY - obstacle.height, obstacle.width, obstacle.height);
+            
+            // 仙人掌刺
+            ctx.strokeStyle = '#228B22';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 3; i++) {
+                const y = groundY - obstacle.height + 10 + i * 15;
+                ctx.beginPath();
+                ctx.moveTo(obstacle.x + obstacle.width, y);
+                ctx.lineTo(obstacle.x + obstacle.width + 5, y);
+                ctx.stroke();
+            }
+            
+            // 如果是連續障礙物，顯示警告
+            if (obstacle.isCloseObstacle) {
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+                ctx.fillRect(obstacle.x, groundY - obstacle.height - 20, obstacle.width, 5);
+            }
+        }
+        
+        // 更新遊戲邏輯
+        function update() {
+            // 更新恐龍位置
+            if (dino.jumping) {
+                dino.y += dino.velocity;
+                dino.velocity += dino.gravity;
+                
+                // 落地檢查
+                if (dino.y >= 200) {
+                    dino.y = 200;
+                    dino.jumping = false;
+                    dino.velocity = 0;
+                }
+            }
+            
+            // 生成障礙物 - 改進版
+            const currentTime = Date.now();
+            const timeSinceLastObstacle = currentTime - lastObstacleTime;
+            
+            // 根據遊戲速度調整生成機率
+            let spawnChance = 0.02;
+            if (level > 3) spawnChance = 0.03;
+            if (level > 5) spawnChance = 0.04;
+            
+            // 確保障礙物間距合理
+            const minTimeBetweenObstacles = Math.max(500, 1000 - (level * 50)); // 隨等級減少間距，但有下限
+            
+            if (timeSinceLastObstacle > minTimeBetweenObstacles && 
+                Math.random() < spawnChance && 
+                obstacles.length < 3) { // 限制畫面上最多3個障礙物
+                
+                // 檢查與最近障礙物的距離
+                let canSpawn = true;
+                if (obstacles.length > 0) {
+                    const lastObstacle = obstacles[obstacles.length - 1];
+                    const distanceFromLast = canvas.width - lastObstacle.x;
+                    
+                    // 確保與上一個障礙物有足夠距離
+                    if (distanceFromLast < minObstacleDistance) {
+                        canSpawn = false;
+                    }
+                }
+                
+                if (canSpawn) {
+                    spawnObstacle();
+                    lastObstacleTime = currentTime;
+                }
+            }
+            
+            // 更新障礙物位置並檢查碰撞
+            let warningShown = false;
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const obstacle = obstacles[i];
+                obstacle.x -= gameSpeed;
+                
+                // 檢查是否需要顯示警告
+                if (obstacle.x < 400 && obstacle.x > 200 && !warningShown) {
+                    nextObstacleWarning.style.display = 'block';
+                    warningShown = true;
+                    
+                    // 2秒後隱藏警告
+                    setTimeout(() => {
+                        nextObstacleWarning.style.display = 'none';
+                    }, 2000);
+                }
+                
+                // 移除離開畫面的障礙物
+                if (obstacle.x + obstacle.width < 0) {
+                    obstacles.splice(i, 1);
+                    score += 10;
+                    scoreElement.textContent = score;
+                    
+                    // 檢查是否升級
+                    if (score >= level * 100) {
+                        levelUp();
+                    }
+                    continue;
+                }
+                
+                // 碰撞檢測
+                if (obstacle.x < dino.x + dino.width &&
+                    obstacle.x + obstacle.width > dino.x &&
+                    groundY - obstacle.height < dino.y + dino.height) {
+                    gameOver();
+                    return;
+                }
+            }
+            
+            // 如果沒有障礙物需要警告，隱藏警告
+            if (!warningShown) {
+                nextObstacleWarning.style.display = 'none';
+            }
+        }
+        
+        // 生成障礙物
+        function spawnObstacle() {
+            // 多樣化障礙物類型
+            const types = [
+                { width: 20, height: 30 + Math.random() * 40, color: '#2E8B57' },
+                { width: 25, height: 40 + Math.random() * 30, color: '#3CB371' },
+                { width: 30, height: 35 + Math.random() * 35, color: '#66CDAA' }
+            ];
+            
+            const type = types[Math.floor(Math.random() * types.length)];
+            const newObstacle = {
+                x: canvas.width,
+                width: type.width,
+                height: type.height,
+                color: type.color,
+                isCloseObstacle: false
+            };
+            
+            // 檢查是否為連續障礙物
+            if (obstacles.length > 0) {
+                const lastObstacle = obstacles[obstacles.length - 1];
+                const distance = canvas.width - lastObstacle.x;
+                
+                // 如果距離太近，標記為連續障礙物
+                if (distance < 400) {
+                    newObstacle.isCloseObstacle = true;
+                    newObstacle.color = '#DC143C'; // 紅色表示危險
+                }
+            }
+            
+            obstacles.push(newObstacle);
+        }
+        
+        // 升級
+        function levelUp() {
+            level++;
+            gameSpeed = Math.min(gameSpeed + 0.5, 15); // 限制最大速度
+            
+            // 更新顯示
+            levelElement.textContent = level;
+            
+            // 調整障礙物最小間距（隨等級減少，但有下限）
+            minObstacleDistance = Math.max(200, 300 - (level * 10));
+            
+            // 升級特效
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            setTimeout(() => {
+                // 恢復正常畫面
+                draw();
+            }, 200);
+        }
+        
+        // 跳躍功能
+        function jump() {
+            if (!gameStarted) {
+                startGame();
+                return;
+            }
+            
+            if (!dino.jumping && gameRunning) {
+                dino.jumping = true;
+                dino.velocity = dino.jumpPower;
+                
+                // 跳躍特效
+                dino.jumpPower = -12 - (level * 0.5); // 隨等級增加跳躍力
+            }
+        }
+        
+        // 開始遊戲
+        function startGame() {
+            if (!gameRunning) {
+                gameRunning = true;
+                gameStarted = true;
+                gameLoop = setInterval(() => {
+                    update();
+                    draw();
+                }, 1000 / 60); // 60 FPS
+            }
+        }
+        
+        // 遊戲結束
+        function gameOver() {
+            gameRunning = false;
+            clearInterval(gameLoop);
+            
+            // 更新最高分
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('dinoHighScore', highScore);
+                highScoreElement.textContent = highScore;
+            }
+            
+            // 顯示遊戲結束畫面
+            finalScoreElement.textContent = score;
+            finalLevelElement.textContent = level;
+            finalHighScoreElement.textContent = highScore;
+            gameOverScreen.style.display = 'flex';
+        }
+        
+        // 事件監聽
+        playAgainBtn.addEventListener('click', () => {
+            initGame();
+        });
+        
+        jumpBtn.addEventListener('click', jump);
+        
+        // 鍵盤控制
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                jump();
+                e.preventDefault();
+            }
+        });
+        
+        // 初始化遊戲
+        initGame();
+    </script>
+</body>
+</html>

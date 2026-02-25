@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hiroshi's Center 首頁 (明亮模式)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffb6c1", 
+                        "primary-dim": "#ff9eb3",
+                        "secondary": "#e6f7ff",
+                        "background-light": "#e6f7ff",
+                        "surface-white": "#ffffff",
+                        "text-dark": "#333333",
+                        "text-gray": "#666666"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                    boxShadow: {
+                        "soft": "0 4px 20px -2px rgba(230, 247, 255, 0.5)",
+                        "card": "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gradient-to-br from-[#e6f7ff] to-[#f0f9ff] font-display text-text-dark h-screen flex flex-col overflow-hidden antialiased">
+<header class="px-6 pt-12 pb-4 flex justify-between items-center bg-white/60 backdrop-blur-md border-b border-white/50 z-10 sticky top-0">
+<div class="flex flex-col">
+<h1 class="text-2xl font-bold tracking-tight text-text-dark">Hiroshi's <span class="text-primary">Center</span></h1>
+<p class="text-xs text-text-gray mt-0.5">Welcome back, Player!</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-full bg-white text-primary shadow-sm hover:shadow-md transition-all border border-primary/20">
+<span class="material-icons-round text-xl">light_mode</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-white p-0.5 shadow-sm border border-white">
+<img class="w-full h-full object-cover rounded-full" data-alt="user avatar profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-y5Qe2tWV3qlDAyKzy-8lCjlk8cMYXo9E5UzqiU86fQuDnozRVMk6xAV6E3-DcVIPR0Gtp2_b4RnZKyO1rNRfiLp7eBD8-P0NDdQ_Zp1OA1cZVhhALi4631Xd9_vqNnnTnYtvx4pRqXxhsfLoUH-LjYb_2vZZ45nR9kAVAgT7woOAulBksiDhVFMeUT7pGDGj8r-lRhQ9GZojF-ftwC3lZT3X93jxZeQSnIjF0JCX1ag-phtny-hTn6OfsKYp1XKLKbNinCudWtk"/>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-24 px-6 pt-6">
+<div class="bg-white rounded-2xl p-5 shadow-card mb-8 border border-white/50 relative overflow-hidden">
+<div class="absolute right-0 top-0 w-32 h-32 bg-primary/10 rounded-bl-full -mr-4 -mt-4"></div>
+<div class="flex justify-between items-center relative z-10">
+<div>
+<p class="text-sm text-text-gray font-medium mb-1">Total Games Played</p>
+<h2 class="text-3xl font-bold text-text-dark">42</h2>
+</div>
+<div class="w-px h-12 bg-gray-100 mx-4"></div>
+<div>
+<p class="text-sm text-text-gray font-medium mb-1">High Score</p>
+<h2 class="text-3xl font-bold text-primary">9,999</h2>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+<button class="flex-none px-6 py-2.5 rounded-full bg-primary text-white font-semibold text-sm shadow-lg shadow-primary/20">
+                    全部
+                </button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-white border border-gray-100 text-text-gray font-medium text-sm whitespace-nowrap hover:bg-gray-50 transition-colors shadow-sm">
+                    動作
+                </button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-white border border-gray-100 text-text-gray font-medium text-sm whitespace-nowrap hover:bg-gray-50 transition-colors shadow-sm">
+                    益智
+                </button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-white border border-gray-100 text-text-gray font-medium text-sm whitespace-nowrap hover:bg-gray-50 transition-colors shadow-sm">
+                    反應
+                </button>
+</div>
+</div>
+<div class="mb-8">
+<div class="relative group">
+<span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary material-icons-round group-focus-within:scale-110 transition-transform">search</span>
+<input class="w-full bg-white border-none rounded-xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder-gray-400 shadow-card transition-shadow" placeholder="Search games..." type="text"/>
+</div>
+</div>
+<div class="mb-8">
+<div class="flex justify-between items-end mb-4">
+<h2 class="text-xl font-bold text-text-dark">Featured Games</h2>
+<a class="text-primary text-xs font-semibold tracking-wide uppercase hover:underline" href="#">View All</a>
+</div>
+<div class="space-y-4">
+<div class="bg-white rounded-xl p-3 shadow-card border border-white flex gap-4 items-center">
+<div class="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+<img class="w-full h-full object-cover" data-alt="pixel art dinosaur landscape" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWWg1K9E4UUIKmE2EDdPAXGuSsS5RY741_JQiWr01kEHg1k37BPTlJ1om8anZiXRr9Pz16p4xLkXfJCeBgq6UckizAmgO7IYiEXbpxMFSbFoJ2BBlvCkzY3eq3utZ14LSfwIb88Pmuwt53zyCFD1HFUDwr7JACv-8zOkPuwpc5Rl7f9dpkjpHEw_nd4gSI5qVaO2CBYSf6RTvY52drDt_gdvaDhyByFuBcvU2tyTO9OVAYvhSm2MLA4OXO2pAMWO8gbeE9_CA54iE"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-text-dark text-base mb-1 truncate">Dinosaur Jump</h3>
+<div class="flex items-center gap-1 text-yellow-400 mb-2">
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm text-gray-300">star</span>
+<span class="text-xs text-text-gray font-medium ml-1">4.2</span>
+</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary text-primary hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap">
+                        Play Now
+                    </button>
+</div>
+<div class="bg-white rounded-xl p-3 shadow-card border border-white flex gap-4 items-center">
+<div class="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+<img class="w-full h-full object-cover" data-alt="abstract geometric pattern squares" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkl-lbIeAQVa4FcrYrdmcD3YSACmy5vAHtccIc_6T3TrjxKqNf2KgLlzZULph8rexAehZ4PLUkmsZUeasevcJE2DdlrVE11wnqSVKhaM2cRU0EE7UQBR0IJsb7KwF1HSJa7YVJsUegQ6i4BMTxQ0nmG_BQNH5XMr3RWVyS_nXcmfMBQJkGFfNmKjqH5Frt5G69byK_t2o7k5lKbTs7zQ0c6BTZxLb7Rr96MVuaxUqSRbXrlKs1ZiOSn5llN6JXhBaiBJhavLAqg3A"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-text-dark text-base mb-1 truncate">Tic-Tac-Toe</h3>
+<div class="flex items-center gap-1 text-yellow-400 mb-2">
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star_half</span>
+<span class="material-icons-round text-sm text-gray-300">star</span>
+<span class="text-xs text-text-gray font-medium ml-1">3.8</span>
+</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary text-primary hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap">
+                        Play Now
+                    </button>
+</div>
+<div class="bg-white rounded-xl p-3 shadow-card border border-white flex gap-4 items-center">
+<div class="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+<img class="w-full h-full object-cover" data-alt="green frogs toy arcade game" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcH4udKFILejLHNmqRFrRZJN9lA7g9atpXbQq6WIT1PVXH7ASkUM0TGBXpmGKmgRo-dWnKH0NFXgLQEHeK8xEcYM9whsUK1IvtluQk_MzWfcGCIP5Yk51264FxMx4EjkRH8pU-6fo8Sr3I-oycQ-i6wE0dNBL0oVWXq83oQ1duD22zzG_2qVzLUm4EO-yb4XVoMHzFa_CLrnax5i3ep0Xhr-hxhUfM_huutlhwUXLuMXyxKDlYNKqOBsrA5-vb2Pexz97mKwhQEHE"/>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-text-dark text-base mb-1 truncate">Whack-a-Frog</h3>
+<div class="flex items-center gap-1 text-yellow-400 mb-2">
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="material-icons-round text-sm">star</span>
+<span class="text-xs text-text-gray font-medium ml-1">5.0</span>
+</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary text-primary hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap">
+                        Play Now
+                    </button>
+</div>
+</div>
+</div>
+<div class="mb-4">
+<h2 class="text-xl font-bold text-text-dark mb-4">Leaderboard</h2>
+<div class="bg-white rounded-2xl p-4 shadow-card border border-white/50">
+<div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+<div class="flex items-center gap-3">
+<div class="font-bold text-lg text-primary w-6">#1</div>
+<div class="w-10 h-10 rounded-full bg-gray-100 overflow-hidden">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUK9mt9lBwJpJLwmbuF3urkOiduWfacpfyRMjeTF_Ey4hSJ895X4tuP2n78IsrRsdLutr6pq4e9jfSQBLYlITLX_kUtzneKeJBEbP8l1J015nCOhAYNtAruFOOgoUzmmsCGBK4pRNmXb1ANy888uPji-OHFvAjZtwzGVIEPVkA6LX0jJI3mkefInH72KBQlDTAKDRVtNp74Cw_n5YWFtToi8DutNoBImLOphtQu-2IEHtbDpBNQebdeLEssLZ2_E-M3q89wKuSHoA"/>
+</div>
+<span class="font-semibold text-text-dark">CyberNinja</span>
+</div>
+<span class="font-bold text-text-gray">12,500</span>
+</div>
+<div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+<div class="flex items-center gap-3">
+<div class="font-bold text-lg text-text-gray w-6">#2</div>
+<div class="w-10 h-10 rounded-full bg-gray-100 overflow-hidden">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ9XwgXQFodb4HQK2beRXb87l33KN_WUbU2MOnJt6Wgv7jA2ndI4DprCJgfukdkcJ5eR07r8U-AWydUBfGU2qGSZJkos1nRs5z4dWSwb47JMR_Iimt9c259LjqscZBfU1sGCChhX2sx3Ejm5RLknpmHhbEbo0u9PKRHyOPXT9fN8t6XgCNVkD15TYS5eKaO-NGNqN3QXbEWW40U5lQquX5Bb0MAdxEQ70VB2DgA517MzHAXD8DRPZ1TDdD1s5RVqYGCES6cG2zYdU"/>
+</div>
+<span class="font-semibold text-text-dark">RetroKing</span>
+</div>
+<span class="font-bold text-text-gray">11,240</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="font-bold text-lg text-text-gray w-6">#3</div>
+<div class="w-10 h-10 rounded-full bg-gray-100 overflow-hidden">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuvmtUxrxmM5ZT4TGed3GKgos9-ru9BnsOnOJjhWAOv8TX8G2CO3Mb_kj6siu8LAKxEJCaZoGfuyTwDoIKWqAGK5SeZ4FDbwv1sjHuseZRVy1ImQlJSGos6Ej0pCSOw-2_SPeY-5f-Orno4Qhkc2omBiFhlCWXzoRvWFq6_I97UBuqAtgm9E8AU49SQKFR1U0Hyr6Pth3uYzG4heWlCnkRWfEQ9gDg9xkvr_yIyooDJPUAyoPThDDGzNmtqEdg2u1ePVfYNwbBQxc"/>
+</div>
+<span class="font-semibold text-text-dark">PixelArt</span>
+</div>
+<span class="font-bold text-text-gray">10,800</span>
+</div>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 pb-6 pt-3 px-6 z-20 shadow-lg">
+<div class="flex justify-between items-center">
+<button class="flex flex-col items-center gap-1 text-primary relative w-12">
+<span class="absolute -top-6 w-8 h-1 bg-primary rounded-b-lg shadow-[0_0_10px_rgba(255,182,193,0.6)]"></span>
+<span class="material-icons-round text-2xl">home</span>
+<span class="text-[10px] font-medium">首頁</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-text-gray hover:text-primary transition-colors group w-12">
+<span class="material-icons-round text-2xl group-hover:scale-110 transition-transform">sports_esports</span>
+<span class="text-[10px] font-medium">遊戲</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-text-gray hover:text-primary transition-colors group w-12">
+<span class="material-icons-round text-2xl group-hover:scale-110 transition-transform">leaderboard</span>
+<span class="text-[10px] font-medium">排名</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-text-gray hover:text-primary transition-colors group w-12">
+<div class="w-6 h-6 rounded-full bg-gray-100 overflow-hidden border border-transparent group-hover:border-primary transition-colors">
+<img class="w-full h-full object-cover" data-alt="user avatar profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-y5Qe2tWV3qlDAyKzy-8lCjlk8cMYXo9E5UzqiU86fQuDnozRVMk6xAV6E3-DcVIPR0Gtp2_b4RnZKyO1rNRfiLp7eBD8-P0NDdQ_Zp1OA1cZVhhALi4631Xd9_vqNnnTnYtvx4pRqXxhsfLoUH-LjYb_2vZZ45nR9kAVAgT7woOAulBksiDhVFMeUT7pGDGj8r-lRhQ9GZojF-ftwC3lZT3X93jxZeQSnIjF0JCX1ag-phtny-hTn6OfsKYp1XKLKbNinCudWtk"/>
+</div>
+<span class="text-[10px] font-medium">我的</span>
+</button>
+</div>
+</nav>
+
+</body></html>

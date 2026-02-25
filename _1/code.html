@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-Hant"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hiroshi's Center - 所有遊戲</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ffd900",
+                        "primary-dim": "#ccad00", 
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#23200f",
+                        "surface-dark": "#2d2a1a",
+                        "surface-darker": "#1a180b"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hide for categories */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white h-screen flex flex-col overflow-hidden antialiased">
+<!-- Header Section -->
+<header class="px-6 pt-12 pb-4 flex justify-between items-center bg-white/5 dark:bg-surface-darker border-b border-gray-200 dark:border-white/5 backdrop-blur-sm z-10">
+<div class="flex flex-col">
+<h1 class="text-2xl font-bold tracking-tight text-primary">Hiroshi's <span class="text-gray-800 dark:text-white">Center</span></h1>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Arcade Portal • v2.4</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 rounded-full bg-gray-100 dark:bg-surface-dark text-gray-600 dark:text-gray-300 hover:bg-primary/20 hover:text-primary transition-colors">
+<span class="material-icons-round text-xl">search</span>
+</button>
+<button class="p-2 rounded-full bg-gray-100 dark:bg-surface-dark text-primary shadow-sm hover:shadow-md transition-all border border-transparent dark:border-primary/20">
+<span class="material-icons-round text-xl">dark_mode</span>
+</button>
+</div>
+</header>
+<!-- Main Scrollable Content -->
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Search Bar Area -->
+<div class="px-6 py-5">
+<div class="relative">
+<span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 material-icons-round">sports_esports</span>
+<input class="w-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 transition-shadow shadow-sm dark:shadow-none" placeholder="搜尋遊戲 (例如: Dino Jump)" type="text"/>
+</div>
+</div>
+<!-- Categories Tabs -->
+<div class="px-6 mb-6">
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+<button class="flex-none px-6 py-2.5 rounded-full bg-primary text-background-dark font-semibold text-sm shadow-lg shadow-primary/20">
+                    全部
+                </button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-300 font-medium text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                    動作
+                </button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-300 font-medium text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                    益智
+                </button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-300 font-medium text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                    反應
+                </button>
+<button class="flex-none px-6 py-2.5 rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-300 font-medium text-sm whitespace-nowrap hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                    多人
+                </button>
+</div>
+</div>
+<!-- Featured / Popular Grid -->
+<div class="px-6 mb-8">
+<div class="flex justify-between items-end mb-4">
+<h2 class="text-xl font-bold dark:text-white">熱門推薦</h2>
+<a class="text-primary text-xs font-semibold tracking-wide uppercase hover:underline" href="#">查看更多</a>
+</div>
+<!-- Featured Card (Large) -->
+<div class="relative w-full h-48 rounded-2xl overflow-hidden shadow-lg group">
+<img class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="retro arcade game screen with neon lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUKGOTbiLbl521WGiqnN1Lczi-uCNb5CvUxHjVTAXuyNfM8OwXCyIp7TcLTU-WV9xJ6satR2byEzqDWXvGFSzTDzqKLjho9wOm7UZCQzcyItrBMaHW1BPpcMD8hJCJnMOOx5fJKVczXgsO2l45lvILhqVhD0yJFD-gdd4EJQWEohZOMWA-S1tlfh0iwCec87rKMGznaXk0hbjUKKie2j3EeY2UljtOvOzqICHVgF3FFBtld4vKfumKgSz4j_GJ-eiBJxNXtr2oCKs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/90 via-background-dark/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-5 w-full">
+<div class="flex justify-between items-end">
+<div>
+<span class="inline-block px-2 py-0.5 rounded bg-primary text-background-dark text-[10px] font-bold mb-2">TRENDING</span>
+<h3 class="text-2xl font-bold text-white mb-1 leading-none">Cyber Run 2077</h3>
+<p class="text-gray-300 text-xs">賽博龐克 • 跑酷 • 動作</p>
+</div>
+<button class="bg-white text-background-dark w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+<span class="material-icons-round">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Games Grid -->
+<div class="px-6">
+<h2 class="text-xl font-bold dark:text-white mb-4">所有遊戲</h2>
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1: Dinosaur Jump -->
+<div class="bg-white dark:bg-surface-dark rounded-xl p-3 shadow-sm border border-gray-100 dark:border-white/5 group hover:border-primary/50 transition-colors">
+<div class="relative h-32 rounded-lg overflow-hidden mb-3 bg-gray-200 dark:bg-surface-darker">
+<img class="w-full h-full object-cover" data-alt="pixel art dinosaur landscape" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWWg1K9E4UUIKmE2EDdPAXGuSsS5RY741_JQiWr01kEHg1k37BPTlJ1om8anZiXRr9Pz16p4xLkXfJCeBgq6UckizAmgO7IYiEXbpxMFSbFoJ2BBlvCkzY3eq3utZ14LSfwIb88Pmuwt53zyCFD1HFUDwr7JACv-8zOkPuwpc5Rl7f9dpkjpHEw_nd4gSI5qVaO2CBYSf6RTvY52drDt_gdvaDhyByFuBcvU2tyTO9OVAYvhSm2MLA4OXO2pAMWO8gbeE9_CA54iE"/>
+<div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[10px] text-white font-medium flex items-center gap-1">
+<span class="material-icons-round text-[10px] text-primary">local_fire_department</span> Hot
+                        </div>
+</div>
+<h3 class="font-bold text-gray-800 dark:text-gray-100 text-base mb-1 truncate">Dinosaur Jump</h3>
+<div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+<span class="flex items-center gap-1"><span class="material-icons-round text-[12px]">visibility</span> 1.2k</span>
+<span>2m ago</span>
+</div>
+<button class="w-full mt-3 py-2 bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-background-dark dark:hover:bg-primary dark:hover:text-background-dark text-gray-700 dark:text-gray-300 rounded-lg text-xs font-bold transition-colors">
+                        開始遊玩
+                    </button>
+</div>
+<!-- Card 2: Tic-Tac-Toe -->
+<div class="bg-white dark:bg-surface-dark rounded-xl p-3 shadow-sm border border-gray-100 dark:border-white/5 group hover:border-primary/50 transition-colors">
+<div class="relative h-32 rounded-lg overflow-hidden mb-3 bg-gray-200 dark:bg-surface-darker">
+<img class="w-full h-full object-cover" data-alt="abstract geometric pattern squares" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkl-lbIeAQVa4FcrYrdmcD3YSACmy5vAHtccIc_6T3TrjxKqNf2KgLlzZULph8rexAehZ4PLUkmsZUeasevcJE2DdlrVE11wnqSVKhaM2cRU0EE7UQBR0IJsb7KwF1HSJa7YVJsUegQ6i4BMTxQ0nmG_BQNH5XMr3RWVyS_nXcmfMBQJkGFfNmKjqH5Frt5G69byK_t2o7k5lKbTs7zQ0c6BTZxLb7Rr96MVuaxUqSRbXrlKs1ZiOSn5llN6JXhBaiBJhavLAqg3A"/>
+</div>
+<h3 class="font-bold text-gray-800 dark:text-gray-100 text-base mb-1 truncate">Tic-Tac-Toe</h3>
+<div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+<span class="flex items-center gap-1"><span class="material-icons-round text-[12px]">play_circle</span> 850</span>
+<span class="text-green-500 dark:text-green-400 flex items-center gap-0.5"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Live</span>
+</div>
+<button class="w-full mt-3 py-2 bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-background-dark dark:hover:bg-primary dark:hover:text-background-dark text-gray-700 dark:text-gray-300 rounded-lg text-xs font-bold transition-colors">
+                        開始遊玩
+                    </button>
+</div>
+<!-- Card 3: Whack-a-Frog -->
+<div class="bg-white dark:bg-surface-dark rounded-xl p-3 shadow-sm border border-gray-100 dark:border-white/5 group hover:border-primary/50 transition-colors">
+<div class="relative h-32 rounded-lg overflow-hidden mb-3 bg-gray-200 dark:bg-surface-darker">
+<img class="w-full h-full object-cover" data-alt="green frogs toy arcade game" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcH4udKFILejLHNmqRFrRZJN9lA7g9atpXbQq6WIT1PVXH7ASkUM0TGBXpmGKmgRo-dWnKH0NFXgLQEHeK8xEcYM9whsUK1IvtluQk_MzWfcGCIP5Yk51264FxMx4EjkRH8pU-6fo8Sr3I-oycQ-i6wE0dNBL0oVWXq83oQ1duD22zzG_2qVzLUm4EO-yb4XVoMHzFa_CLrnax5i3ep0Xhr-hxhUfM_huutlhwUXLuMXyxKDlYNKqOBsrA5-vb2Pexz97mKwhQEHE"/>
+</div>
+<h3 class="font-bold text-gray-800 dark:text-gray-100 text-base mb-1 truncate">Whack-a-Frog</h3>
+<div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+<span class="flex items-center gap-1"><span class="material-icons-round text-[12px]">visibility</span> 2.3k</span>
+<span>1h ago</span>
+</div>
+<button class="w-full mt-3 py-2 bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-background-dark dark:hover:bg-primary dark:hover:text-background-dark text-gray-700 dark:text-gray-300 rounded-lg text-xs font-bold transition-colors">
+                        開始遊玩
+                    </button>
+</div>
+<!-- Card 4: Space Invaders -->
+<div class="bg-white dark:bg-surface-dark rounded-xl p-3 shadow-sm border border-gray-100 dark:border-white/5 group hover:border-primary/50 transition-colors">
+<div class="relative h-32 rounded-lg overflow-hidden mb-3 bg-gray-200 dark:bg-surface-darker">
+<img class="w-full h-full object-cover" data-alt="dark space with stars texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUK9mt9lBwJpJLwmbuF3urkOiduWfacpfyRMjeTF_Ey4hSJ895X4tuP2n78IsrRsdLutr6pq4e9jfSQBLYlITLX_kUtzneKeJBEbP8l1J015nCOhAYNtAruFOOgoUzmmsCGBK4pRNmXb1ANy888uPji-OHFvAjZtwzGVIEPVkA6LX0jJI3mkefInH72KBQlDTAKDRVtNp74Cw_n5YWFtToi8DutNoBImLOphtQu-2IEHtbDpBNQebdeLEssLZ2_E-M3q89wKuSHoA"/>
+<div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[10px] text-white font-medium flex items-center gap-1">
+                             NEW
+                        </div>
+</div>
+<h3 class="font-bold text-gray-800 dark:text-gray-100 text-base mb-1 truncate">Space Defenders</h3>
+<div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+<span class="flex items-center gap-1"><span class="material-icons-round text-[12px]">visibility</span> 540</span>
+<span>4h ago</span>
+</div>
+<button class="w-full mt-3 py-2 bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-background-dark dark:hover:bg-primary dark:hover:text-background-dark text-gray-700 dark:text-gray-300 rounded-lg text-xs font-bold transition-colors">
+                        開始遊玩
+                    </button>
+</div>
+<!-- Card 5: Fruit Ninja -->
+<div class="bg-white dark:bg-surface-dark rounded-xl p-3 shadow-sm border border-gray-100 dark:border-white/5 group hover:border-primary/50 transition-colors">
+<div class="relative h-32 rounded-lg overflow-hidden mb-3 bg-gray-200 dark:bg-surface-darker">
+<img class="w-full h-full object-cover" data-alt="splashing colorful fruits closeup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ9XwgXQFodb4HQK2beRXb87l33KN_WUbU2MOnJt6Wgv7jA2ndI4DprCJgfukdkcJ5eR07r8U-AWydUBfGU2qGSZJkos1nRs5z4dWSwb47JMR_Iimt9c259LjqscZBfU1sGCChhX2sx3Ejm5RLknpmHhbEbo0u9PKRHyOPXT9fN8t6XgCNVkD15TYS5eKaO-NGNqN3QXbEWW40U5lQquX5Bb0MAdxEQ70VB2DgA517MzHAXD8DRPZ1TDdD1s5RVqYGCES6cG2zYdU"/>
+</div>
+<h3 class="font-bold text-gray-800 dark:text-gray-100 text-base mb-1 truncate">Fruit Slash</h3>
+<div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+<span class="flex items-center gap-1"><span class="material-icons-round text-[12px]">visibility</span> 1.8k</span>
+<span>10m ago</span>
+</div>
+<button class="w-full mt-3 py-2 bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-background-dark dark:hover:bg-primary dark:hover:text-background-dark text-gray-700 dark:text-gray-300 rounded-lg text-xs font-bold transition-colors">
+                        開始遊玩
+                    </button>
+</div>
+<!-- Card 6: Tetris -->
+<div class="bg-white dark:bg-surface-dark rounded-xl p-3 shadow-sm border border-gray-100 dark:border-white/5 group hover:border-primary/50 transition-colors">
+<div class="relative h-32 rounded-lg overflow-hidden mb-3 bg-gray-200 dark:bg-surface-darker">
+<img class="w-full h-full object-cover" data-alt="falling colorful geometric blocks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuvmtUxrxmM5ZT4TGed3GKgos9-ru9BnsOnOJjhWAOv8TX8G2CO3Mb_kj6siu8LAKxEJCaZoGfuyTwDoIKWqAGK5SeZ4FDbwv1sjHuseZRVy1ImQlJSGos6Ej0pCSOw-2_SPeY-5f-Orno4Qhkc2omBiFhlCWXzoRvWFq6_I97UBuqAtgm9E8AU49SQKFR1U0Hyr6Pth3uYzG4heWlCnkRWfEQ9gDg9xkvr_yIyooDJPUAyoPThDDGzNmtqEdg2u1ePVfYNwbBQxc"/>
+</div>
+<h3 class="font-bold text-gray-800 dark:text-gray-100 text-base mb-1 truncate">Block Puzzle</h3>
+<div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+<span class="flex items-center gap-1"><span class="material-icons-round text-[12px]">visibility</span> 3.1k</span>
+<span>2d ago</span>
+</div>
+<button class="w-full mt-3 py-2 bg-gray-100 dark:bg-white/5 hover:bg-primary hover:text-background-dark dark:hover:bg-primary dark:hover:text-background-dark text-gray-700 dark:text-gray-300 rounded-lg text-xs font-bold transition-colors">
+                        開始遊玩
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full bg-white dark:bg-surface-darker border-t border-gray-200 dark:border-white/5 pb-6 pt-3 px-6 z-20">
+<div class="flex justify-between items-center">
+<button class="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-primary transition-colors group w-12">
+<span class="material-icons-round text-2xl group-hover:scale-110 transition-transform">home</span>
+<span class="text-[10px] font-medium">首頁</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary w-12 relative">
+<span class="absolute -top-6 w-8 h-1 bg-primary rounded-b-lg shadow-[0_0_10px_rgba(255,217,0,0.6)]"></span>
+<span class="material-icons-round text-2xl">sports_esports</span>
+<span class="text-[10px] font-medium">遊戲</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-primary transition-colors group w-12">
+<span class="material-icons-round text-2xl group-hover:scale-110 transition-transform">leaderboard</span>
+<span class="text-[10px] font-medium">排名</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500 hover:text-primary transition-colors group w-12">
+<div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-white/20 overflow-hidden border border-transparent group-hover:border-primary transition-colors">
+<img class="w-full h-full object-cover" data-alt="user avatar profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-y5Qe2tWV3qlDAyKzy-8lCjlk8cMYXo9E5UzqiU86fQuDnozRVMk6xAV6E3-DcVIPR0Gtp2_b4RnZKyO1rNRfiLp7eBD8-P0NDdQ_Zp1OA1cZVhhALi4631Xd9_vqNnnTnYtvx4pRqXxhsfLoUH-LjYb_2vZZ45nR9kAVAgT7woOAulBksiDhVFMeUT7pGDGj8r-lRhQ9GZojF-ftwC3lZT3X93jxZeQSnIjF0JCX1ag-phtny-hTn6OfsKYp1XKLKbNinCudWtk"/>
+</div>
+<span class="text-[10px] font-medium">我的</span>
+</button>
+</div>
+</nav>
+</body></html>
